@@ -1,0 +1,365 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fire99/register2.dart';
+import 'package:fire99/screen2.dart';
+import 'package:fire99/videoscreen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'Helpers/remember_me.dart';
+import 'colorr.dart';
+import 'register2.dart';
+
+class LoginScreen extends StatefulWidget {
+  static const routeName = './login';
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  bool isRememberMe = false;
+
+  void initState() {
+    super.initState();
+    Firebase.initializeApp().whenComplete(() {
+      print("completed");
+      setState(() {});
+    });
+  }
+
+  final _formkey = GlobalKey<FormState>();
+
+  TextEditingController _emailcontroller = TextEditingController();
+
+  TextEditingController _passwordcontroller = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailcontroller.dispose();
+    _passwordcontroller.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        /* appBar: AppBar(
+          backgroundColor: Colors.indigo[900],
+          iconTheme: IconThemeData(color: Colors.red),
+          title:Container(
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: [
+                     Colors.white,
+
+                    Colors.lightBlueAccent,
+
+                    // Colors.lightBlueAccent,
+                    //Colors.white,
+                  ])),
+              height:30,
+              child: Center(
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width:40,
+                      ),
+                      / / Container(
+                 width:80,
+                 child:Image.asset('assets/l1.jfif')
+               ),/ /
+                      Text( " Coin",style:TextStyle(color:Colors.red,fontWeight:FontWeight.bold,fontSize:23)),
+                      Text( "s",style:TextStyle(color:Colors.white,fontWeight:FontWeight.bold,fontSize:23)),
+                      //  Text("  Broker",style:TextStyle(color:Colors.lightBlue,fontWeight:FontWeight.bold,fontSize:21)),
+                    ],
+                  ))
+          ),
+          //backgroundColor: Colors.lightBlueAccent,
+          actions: <Widget>[
+            SizedBox(
+              height:10,
+            ),
+
+
+
+
+          ]
+      ),*/
+        body: Container(
+      color: Colors.white,
+      //Color.fromRGBO(41, 30, 83, 1),
+      padding: EdgeInsets.all(16),
+
+      child: SingleChildScrollView(
+        child: Form(
+            key: _formkey,
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 20),
+                Row(children: <Widget>[
+                  Container(
+                    width: 120,
+                    height: 50,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        // color:Colors.lightBlueAccent,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(50),
+                          topLeft: Radius.circular(30),
+                          topRight: Radius.circular(30),
+                          bottomRight: Radius.circular(50),
+                        )),
+                    child: Center(
+                        child: Text(
+                      'Login',
+                      style: TextStyle(
+                          color: Colors.deepPurple,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w900),
+                    )),
+                  ),
+                ]),
+                Container(
+                  width: 400,
+                  height: 190,
+                  color: Colors.lightBlueAccent[300],
+                  child: Image.asset('assets/signup.png'),
+                ),
+                SizedBox(height: 15),
+                TextFormField(
+                  //Email/
+                  controller: _emailcontroller,
+                  cursorColor: Colors.purple,
+                  style: TextStyle(fontSize: 18, color: Colors.black),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                          color: Colors.deepPurple, width: 2.0),
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    //fillColor:Colors.white,
+                    filled: true,
+                    hintText: "Your Email",
+                    hintStyle: TextStyle(
+                      color: Colors.black45,
+                    ),
+                    prefixIcon: Icon(Icons.person, color: Colors.deepPurple),
+                  ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please Fill Email Input';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  //Password/
+                  cursorColor: Colors.deepPurple,
+                  obscureText: true,
+                  controller: _passwordcontroller,
+                  style: TextStyle(fontSize: 18, color: Colors.black),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                          color: Colors.deepPurple, width: 2.0),
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    // fillColor: Colors.white,
+                    filled: true,
+
+                    hintText: "Password",
+                    hintStyle: TextStyle(
+                      color: Colors.black45,
+                    ),
+                    prefixIcon: Icon(Icons.lock, color: Colors.deepPurple),
+                  ),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please Fill Password Input';
+                    }
+                    return null;
+                  },
+                ),
+                CheckboxListTile(
+                    activeColor: Colors.deepPurple,
+                    title: Text('Remember me',
+                        style: TextStyle(color: Colors.deepPurple)),
+                    value: isRememberMe,
+                    onChanged: (value) async {
+                      isRememberMe = value;
+
+                      setState(() {});
+                    }),
+                SizedBox(
+                  height: 15,
+                ),
+                Container(
+                  width: 160,
+                  child: Container(
+                    // color:  Colors.purple,
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(30.0)),
+                      color: Colors.deepPurple,
+                      child: Text(
+                        'Login',
+                        style: TextStyle(color: Colors.white, fontSize: 24),
+                      ),
+                      onPressed: () async {
+                        UserCredential userCredential = await FirebaseAuth
+                            .instance
+                            .signInWithEmailAndPassword(
+                                email: _emailcontroller.text,
+                                password: _passwordcontroller.text);
+
+                        if (userCredential.user.emailVerified == false) {
+                          User user = FirebaseAuth.instance.currentUser;
+                          await user.sendEmailVerification();
+
+                          showDialog(
+                              context: context,
+                              builder: (_) => new AlertDialog(
+                                    title: new Text(" OPEN YOUR EMAIL "),
+                                    content: new Text(
+                                        "We sent a message to your check it to verify your account"),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: Text(' OK '),
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                              return LoginScreen();
+                                            }),
+                                          );
+                                        },
+                                      )
+                                    ],
+                                  ));
+                        } else {
+                          if (isRememberMe) {
+                            await setRememberMe(isRememberMe);
+                            await setEmail(_emailcontroller.text.trim());
+                            await setPassword(_passwordcontroller.text.trim());
+                          } else {
+                            await setRememberMe(isRememberMe);
+                            await setEmail('');
+                            await setPassword('');
+                          }
+                        }
+                        if (_formkey.currentState.validate() &&
+                            userCredential.user.emailVerified == true) {
+                          WidgetsFlutterBinding.ensureInitialized();
+                          await Firebase.initializeApp();
+
+                          var result = await FirebaseAuth.instance
+                              .signInWithEmailAndPassword(
+                                  email: _emailcontroller.text,
+                                  password: _passwordcontroller.text);
+
+                          final user = FirebaseAuth.instance.currentUser;
+                          final userData = await FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(user.uid)
+                              .get();
+                          String ud = userData['username'];
+                          await setUd(ud);
+
+                          if (result != null) {
+                            // pushReplacement
+                            print('welcomee');
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => videoScreen(ud)),
+                            );
+                          } else {
+                            print('user not found');
+                          }
+                        }
+                      },
+                    ),
+                  ),
+                ),
+                Container(
+                    margin: EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      children: <Widget>[
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: Divider(
+                              thickness: 1,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          "O R",
+                          style: TextStyle(
+                              color: Colors.deepPurple,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w700,
+                              fontStyle: FontStyle.italic),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: Divider(
+                              thickness: 1,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )),
+                SizedBox(
+                  height: 5,
+                ),
+                TextButton(
+                  onPressed: () async {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RegisterScreen2()));
+                  },
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 20),
+                    //padding: EdgeInsets.only(left:15,bottom:15,right:15),
+                    //alignment: Alignment.bottomCenter,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "I don't have an account ?",
+                          style: TextStyle(
+                              color: Colors.deepPurple,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FontStyle.italic),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "Sign up",
+                          style: TextStyle(
+                              color: btnforGroundColr,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w900,
+                              fontStyle: FontStyle.italic),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            )),
+      ),
+    ));
+  }
+}
